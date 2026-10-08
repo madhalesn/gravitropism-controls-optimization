@@ -1,4 +1,4 @@
-function [FRF_sim,steptime, step_sim] = sim_system_nodelay_2ndorder(tf_num, tf_pole1, tf_pole2)
+function [FRF_sim, step_time, step_data] = sim_system_nodelay_2ndorder(tf_num, tf_pole1, tf_pole2)
 
 %transfer function
 tf_pole = poly([tf_pole1 tf_pole2]);
@@ -94,40 +94,38 @@ ylabel('Gain')
 title('Root tip frequency response (G(s))');
 
 
-h1 = axes('position',[0.1 0.1 0.88 0.4]);
-hold on
-grid on
-semilogx(f_all, rad2deg(unwrap(angle(FRF_sim))),'b','LineWidth',2,'MarkerSize', 15)
-set(h1,'xScale','log');
-set(h1,'box','on');
-% xlim([1e-5 1e-4]);
-xlabel('Frequency (Hz)')
-ylabel('Phase (deg)')
-
-%sample time
-delta_t = 2.5 * 60;
-
-t = 0 : delta_t : 20*60*60;
-r=90*ones(1, length(t));
-
-r2 = [transpose(t),transpose(r)];
-%define simulation and pass in r2
-simulation = Simulink.SimulationInput('Simulation_nodeadzone_nodelay');
-simulation = simulation.setVariable('r2', r2);
-
-%run simulation
-results=sim(simulation);
-
-figure
-plot(results.simout.time/60/60, results.simout.data)
-step_sim=results.simout.data;
-steptime=results.simout.time/60/60;
-
-hold on
-load singleturn_paper_data.mat
-plot((5/60)*(1:length(data)),-data)
-axis([0 20 0 100])
-ylabel('Root Tip Angle (degrees)')
-xlabel('Time (hrs)')
+% h1 = axes('position',[0.1 0.1 0.88 0.4]);
+% hold on
+% grid on
+% semilogx(f_all, rad2deg(unwrap(angle(FRF_sim))),'b','LineWidth',2,'MarkerSize', 15)
+% set(h1,'xScale','log');
+% set(h1,'box','on');
+% % xlim([1e-5 1e-4]);
+% xlabel('Frequency (Hz)')
+% ylabel('Phase (deg)')
+% %sample time
+% delta_t = 2.5 * 60;
+% 
+% t = 0 : delta_t : 20*60*60;
+% r=90*ones(1, length(t));
+% 
+% r2 = [transpose(t),transpose(r)];
+% %define simulation and pass in r2
+% simulation = Simulink.SimulationInput('Simulation_nodeadzone_nodelay');
+% simulation = simulation.setVariable('r2', r2);
+% 
+% %run simulation
+% results=sim(simulation);
+% 
+% figure,
+% plot(results.simout.time/60/60, results.simout.data)
+% step_time=results.simout.time/60/60;
+% step_data=results.simout.data;
+% hold on
+% load singleturn_paper_data.mat
+% plot((5/60)*(1:length(data)),-data)
+% axis([0 20 0 100])
+% ylabel('Root Tip Angle (degrees)')
+% xlabel('Time (hrs)')
 
 end
