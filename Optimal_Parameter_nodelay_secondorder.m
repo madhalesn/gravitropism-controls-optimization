@@ -18,7 +18,7 @@ para_n = 3;
 
 % Set a set of random values for inital condition
 % rand_set = [1.5 * rand(maxiter,1) 10 * rand(maxiter,1) 0.0004* rand(maxiter,1) 0.0004*rand(maxiter,1) 500 * rand(maxiter,1)];
-rand_set = [0.0004 * rand(maxiter,1) 0.0004*rand(maxiter,1) 0.0004*rand(maxiter,1)];
+rand_set = [0.0004 * rand(maxiter,1) -0.0004*rand(maxiter,1) -0.0004*rand(maxiter,1)];
 
 % Initialize the 
 fval_Set = zeros(maxiter,1);
@@ -34,8 +34,8 @@ for i = 1:maxiter
 % Set initial conditions for each model parameter:
 All_para_0 = rand_set(i,:);
 
-lower_bound = zeros(1,length(All_para_0));
-higher_bound = [1e6 1e6 1e6];
+lower_bound = [0 -1e6 -1e6];
+higher_bound = [1e6 0 0];
 
 
 fun = @(All_para) MSE_error_nodelay_2ndorder(All_para,FRF_data);
@@ -50,10 +50,12 @@ end
 Optimal_para = Optimal_para_Set(index,:);
 
 tf_num = Optimal_para(1);
-tf_pole = Optimal_para(2);
+tf_pole1 = Optimal_para(2);
+tf_pole2 = Optimal_para(3);
+
 
 %% 
-FRF_sim = sim_system_nodelay(tf_num, tf_pole);
+FRF_sim = sim_system_nodelay_2ndorder(tf_num, tf_pole1,tf_pole2);
 
  % make figure showing calculated frf
     f_all = 1 ./(3600 * [30 20 13 8 4 3 2 1.5 1]);
